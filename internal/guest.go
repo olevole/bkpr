@@ -7,9 +7,9 @@ import (
 )
 
 type Guest struct {
-	Id int `json:"id"`
-	Name string `json:"name"`
-	Os string `json:"os"`
+	Id     int    `json:"id"`
+	Name   string `json:"name"`
+	Os     string `json:"os"`
 	Loader string `json:"loader"`
 }
 
@@ -19,23 +19,22 @@ func (g Guest) String() string {
 }
 
 var GuestArgs = map[string]cli.Flag{
-	"id":	cli.IntFlag{
-		Name:	"id, i",
-		Usage:	"guest `ID`",
+	"id": cli.IntFlag{
+		Name:  "id, i",
+		Usage: "guest `ID`",
 	},
 	"name": cli.StringFlag{
-		Name:	"name, n",
-		Usage:	"guest `NAME`",
+		Name:  "name, n",
+		Usage: "guest `NAME`",
 	},
-	"os":	cli.StringFlag{
-		Name:	"os, o",
-		Usage:	"guest `OS`",
-		Value:	"FreeBSD",
+	"os": cli.StringFlag{
+		Name:  "os, o",
+		Usage: "guest `OS`",
+		Value: "FreeBSD",
 	},
 	"loader": cli.StringFlag{
-		Name:	"loader, l",
-		Usage:	"bhyve `LOADER`",
-		Value:	"UEFI",
+		Name:  "loader, l",
+		Usage: "bhyve `LOADER`",
+		Value: "UEFI",
 	},
 }
-

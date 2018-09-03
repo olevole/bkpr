@@ -17,14 +17,14 @@ func main() {
 	app.Copyright = "(c) 2018 Colvin Wellborn"
 	app.Authors = []cli.Author{
 		cli.Author{
-			Name: "Colvin Wellborn",
+			Name:  "Colvin Wellborn",
 			Email: "colvinwellborn@gmail.com",
 		},
 	}
 	app.Commands = []cli.Command{
 		{
-			Name:	"list",
-			Usage:	"print known guests",
+			Name:     "list",
+			Usage:    "print known guests",
 			Category: "Guest Management",
 			Flags: []cli.Flag{
 				bkpr.GuestArgs["id"],
@@ -42,29 +42,29 @@ func main() {
 			},
 		},
 		{
-			Name:	"create",
-			Usage:	"create a new guest",
+			Name:     "create",
+			Usage:    "create a new guest",
 			Category: "Guest Management",
-			Flags:	[]cli.Flag{
+			Flags: []cli.Flag{
 				bkpr.GuestArgs["name"],
 				bkpr.GuestArgs["os"],
 				bkpr.GuestArgs["loader"],
 			},
 			Action: func(c *cli.Context) error {
 				g := bkpr.Guest{
-					Name:	c.String("name"),
-					Os:	c.String("os"),
-					Loader:	c.String("loader"),
+					Name:   c.String("name"),
+					Os:     c.String("os"),
+					Loader: c.String("loader"),
 				}
 				fmt.Println(g)
 				return nil
 			},
 		},
 		{
-			Name:	"modify",
-			Usage:	"modify the configuration of a guest",
+			Name:     "modify",
+			Usage:    "modify the configuration of a guest",
 			Category: "Guest Management",
-			Flags:	[]cli.Flag{
+			Flags: []cli.Flag{
 				bkpr.GuestArgs["id"],
 				bkpr.GuestArgs["name"],
 				bkpr.GuestArgs["os"],
@@ -82,10 +82,10 @@ func main() {
 			},
 		},
 		{
-			Name:	"destroy",
-			Usage:	"permanently remove a guest",
+			Name:     "destroy",
+			Usage:    "permanently remove a guest",
 			Category: "Guest Management",
-			Flags:	[]cli.Flag{
+			Flags: []cli.Flag{
 				bkpr.GuestArgs["id"],
 				bkpr.GuestArgs["name"],
 			},
@@ -101,10 +101,10 @@ func main() {
 			},
 		},
 		{
-			Name:	"status",
-			Usage:	"report on running guests",
+			Name:     "status",
+			Usage:    "report on running guests",
 			Category: "Runtime",
-			Flags:	[]cli.Flag{
+			Flags: []cli.Flag{
 				bkpr.GuestArgs["id"],
 				bkpr.GuestArgs["name"],
 			},
@@ -120,10 +120,10 @@ func main() {
 			},
 		},
 		{
-			Name:	"run",
-			Usage:	"run a guest",
+			Name:     "run",
+			Usage:    "run a guest",
 			Category: "Runtime",
-			Flags:	[]cli.Flag{
+			Flags: []cli.Flag{
 				bkpr.GuestArgs["id"],
 				bkpr.GuestArgs["name"],
 				bkpr.GuestArgs["os"],

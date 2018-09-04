@@ -1,10 +1,12 @@
 package main
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"github.com/colvin/bkpr/internal"
 	"github.com/urfave/cli"
+	"encoding/json"
 	"log"
 	"os"
 )
@@ -61,30 +63,36 @@ func main() {
 				}
 				defer db.Close()
 
+				var rows = new(sql.Rows)
 				if id := c.Int("id"); id != 0 {
-					rows, err := db.Query("SELECT * FROM guest WHERE id = ?", id)
+					rows, err = db.Query("SELECT * FROM guest WHERE id = ?", id)
+				} else if name := c.String("name"); name != "" {
+					rows, err = db.Query("SELECT * FROM guest WHERE name = ?", name)
+				} else {
+					rows, err = db.Query("SELECT * FROM guest")
+				}
+
+				if err != nil {
+					return err
+				}
+				defer rows.Close()
+				guests := new([]bkpr.Guest)
+				for rows.Next() {
+					g := bkpr.Guest{}
+					err = rows.Scan(
+						&g.Id,
+						&g.Name,
+						&g.Os,
+						&g.Loader,
+					)
 					if err != nil {
 						return err
 					}
-					defer rows.Close()
-					for rows.Next() {
-						g := bkpr.Guest{}
-						err = rows.Scan(
-							&g.Id,
-							&g.Name,
-							&g.Os,
-							&g.Loader,
-						)
-						if err != nil {
-							return err
-						}
-						fmt.Println(g)
-					}
-				} else if name := c.String("name"); name != "" {
-					fmt.Printf("would list NAME %s\n", name)
-				} else {
-					fmt.Printf("would list ALL\n")
+					*guests = append(*guests, g)
 				}
+				j, err := json.Marshal(guests)
+				fmt.Printf("%s\n", j)
+
 				return nil
 			},
 		},

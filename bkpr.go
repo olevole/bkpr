@@ -10,6 +10,11 @@ import (
 )
 
 func main() {
+        cli.VersionFlag = cli.BoolFlag{
+                Name: "version, V",
+                Usage: "print the version",
+        }
+
 	app := cli.NewApp()
 	app.Name = "bkpr"
 	app.Usage = "manage bhyve virtual machines"
@@ -21,6 +26,25 @@ func main() {
 			Email: "colvinwellborn@gmail.com",
 		},
 	}
+
+	app.Flags = []cli.Flag{
+                cli.BoolFlag{
+                        Name: "verbose, v",
+                        Usage: "increase output",
+                },
+                cli.BoolFlag{
+                        Name: "quiet, q",
+                        Usage: "decrease output",
+                },
+		cli.StringFlag{
+			Name: "db",
+			Usage: "`PATH` to the sqlite3 database",
+			Value: bkpr.DEFAULT_DB_PATH,
+			EnvVar: "BKPR_DB",
+			Destination: &bkpr.Context.Db,
+		},
+        }
+
 	app.Commands = []cli.Command{
 		{
 			Name:     "list",
@@ -31,8 +55,31 @@ func main() {
 				bkpr.GuestArgs["name"],
 			},
 			Action: func(c *cli.Context) error {
+				db, err := bkpr.Db_connect()
+				if err != nil {
+					return err
+				}
+				defer db.Close()
+
 				if id := c.Int("id"); id != 0 {
-					fmt.Printf("would list ID %d\n", id)
+					rows, err := db.Query("SELECT * FROM guest WHERE id = ?", id)
+					if err != nil {
+						return err
+					}
+					defer rows.Close()
+					for rows.Next() {
+						g := bkpr.Guest{}
+						err = rows.Scan(
+							&g.Id,
+							&g.Name,
+							&g.Os,
+							&g.Loader,
+						)
+						if err != nil {
+							return err
+						}
+						fmt.Println(g)
+					}
 				} else if name := c.String("name"); name != "" {
 					fmt.Printf("would list NAME %s\n", name)
 				} else {
